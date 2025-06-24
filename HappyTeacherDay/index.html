@@ -74,6 +74,12 @@
         <source src="./music/piano.mp3" type="audio/mp3" />
     </audio>
     <script>
+		const player = document.getElementById("player");
+
+		$(document).one('click', function () {
+			player.muted = false;
+			player.play();
+		});
         $(document).ready(() => {
             const canvas = $('#canvas')[0];
             if (!canvas.getContext) {
