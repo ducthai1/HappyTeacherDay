@@ -1,0 +1,228 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="icon" type="image/png" href="./img/CILKGax.png">
+    <!-- Tiêu đề của trang dòng thời gian -->
+    <title>Thời gian đã trải qua</title>
+    <link type="text/css" rel="stylesheet" href="./css/default.css">
+    <link rel="stylesheet" href="./css/style.css">
+	<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="./js/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/functions.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/love.js" charset="utf-8"></script>
+    <style type="text/css"></style>
+    <style>
+        #code {
+            /* color: #3500ff; */
+			/* color: #4B0082; */
+			color: #163e98;
+			font-size: 26px;
+			font-weight: 600;
+			text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+			font-family: 'Great Vibes', cursive;
+			/* font-family: 'Dancing Script', cursive; */
+			line-height: 1.5;
+        }
+        .say {
+            display: block;
+        }
+        .space {
+            margin-left: 20px;
+        }
+        .STYLE1 {
+            font-weight: bold;
+            color: #000;
+        }
+        #clock-box {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="buttons">
+        <!-- <a href="index.html" class="btn btn-bir">Sinh nhật</a> -->
+        <!-- <a href="timeline.html" class="btn btn-timeline">Dòng thời gian</a>
+            <a href="gallery/index.html" class="btn btn-gallery">Ảnh kĩ niệm</a> -->
+    </div>
+    <div id="main">
+        <div id="wrap">
+            <div id="text">
+                <div id="code" style="display: none;">
+                    <span class="say">Kính gửi thầy Hùng/cô Thúy!</span>
+                    <span class="say">Em là Dũng Trương xin gửi đến thầy/cô lời chúc tốt đẹp và chân thành nhất.</span>
+                    <span class="say">Cảm ơn thầy/cô vì những bài học quý giá và sự tận tâm trong từng giờ giảng dạy.</span>
+                    <span class="say"></span>
+                    <span class="say">Em luôn trân trọng công lao và sự hy sinh thầm lặng của thầy/cô dành cho các bạn học sinh nói chung cũng như là em nói riêng.</span>
+                    <span class="say">Chúc thầy/cô luôn mạnh khỏe, hạnh phúc và có thật nhiều niềm vui trong công việc và cuộc sống.</span>
+                    <span class="say"></span>
+                    <span class="say"><span class="space"></span>-- Em Dũng Trương kính mến --</span>
+
+                </div>
+            </div>
+            <canvas id="canvas" width="1100" height="680"></canvas>
+        </div>
+
+    </div>
+
+    <!-- Phần nhạc -->
+    <audio id="player" autoplay loop>
+        <source src="./music/piano.mp3" type="audio/mp3" />
+    </audio>
+    <script>
+		const player = document.getElementById("player");
+
+		$(document).one('click', function () {
+			player.muted = false;
+			player.play();
+		});
+        $(document).ready(() => {
+            const canvas = $('#canvas')[0];
+            if (!canvas.getContext) {
+                $("#error").show();
+                return;
+            }
+
+            const width = 1100;
+            const height = 680;
+            canvas.width = width;
+            canvas.height = height;
+
+            const opts = {
+                seed: {
+                    x: width / 2 - 20,
+                    color: "rgb(190, 26, 37)",
+                    scale: 2
+                },
+                branch: [
+                    [535, 680, 570, 250, 500, 200, 30, 100, [
+                        [540, 500, 455, 417, 340, 400, 13, 100, [
+                            [450, 435, 434, 430, 394, 395, 2, 40]
+                        ]],
+                        [550, 445, 600, 356, 680, 345, 12, 100, [
+                            [578, 400, 648, 409, 661, 426, 3, 80]
+                        ]],
+                        [539, 281, 537, 248, 534, 217, 3, 40],
+                        [546, 397, 413, 247, 328, 244, 9, 80, [
+                            [427, 286, 383, 253, 371, 205, 2, 40],
+                            [498, 345, 435, 315, 395, 330, 4, 60]
+                        ]],
+                        [546, 357, 608, 252, 678, 221, 6, 100, [
+                            [590, 293, 646, 277, 648, 271, 2, 80]
+                        ]]
+                    ]]
+                ],
+                bloom: {
+                    num: 700,
+                    width: 1080,
+                    height: 650,
+                },
+                footer: {
+                    width: 1200,
+                    height: 5,
+                    speed: 10,
+                }
+            };
+
+            const tree = new Tree(canvas, width, height, opts);
+            const seed = tree.seed;
+            const foot = tree.footer;
+            let hold = 1;
+
+            canvas.addEventListener('click', (e) => {
+                const offset = canvas.getBoundingClientRect();
+                const x = e.pageX - offset.left;
+                const y = e.pageY - offset.top;
+                if (seed.hover(x, y)) {
+                    hold = 0;
+                    canvas.style.cursor = 'default';
+                }
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                const offset = canvas.getBoundingClientRect();
+                const x = e.pageX - offset.left;
+                const y = e.pageY - offset.top;
+                canvas.style.cursor = seed.hover(x, y) ? 'pointer' : 'default';
+            });
+
+            const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+            async function seedAnimate() {
+                seed.draw();
+                while (hold) {
+                    await sleep(10);
+                }
+                while (seed.canScale()) {
+                    seed.scale(0.95);
+                    await sleep(10);
+                }
+                while (seed.canMove()) {
+                    seed.move(0, 2);
+                    foot.draw();
+                    await sleep(10);
+                }
+            }
+
+            async function growAnimate() {
+                while (tree.canGrow()) {
+                    tree.grow();
+                    await sleep(10);
+                }
+            }
+
+            async function flowAnimate() {
+                do {
+                    tree.flower(2);
+                    await sleep(10)
+                } while (tree.canFlower());
+            }
+
+            async function moveAnimate() {
+                tree.snapshot("p1", 240, 0, 610, 680);
+                while (tree.move("p1", 500, 0)) {
+                    foot.draw();
+                    await sleep(10);
+                }
+                foot.draw();
+                tree.snapshot("p2", 500, 0, 610, 680);
+
+                canvas.parentElement.style.background = `url(${tree.toDataURL('image/png')})`;
+                await sleep(300);
+                canvas.style.background = "none";
+            }
+
+            async function jumpAnimate() {
+                const ctx = tree.ctx;
+                while (true) {
+                    ctx.clearRect(0, 0, width, height);
+                    tree.jump();
+                    foot.draw();
+                    await sleep(25);
+                }
+            }
+
+            async function textAnimate() {
+                $("#code").show().typewriter();
+            }
+
+            async function runAsync() {
+                await seedAnimate();
+                await growAnimate();
+                await flowAnimate();
+                await moveAnimate();
+                textAnimate();
+                jumpAnimate();
+            }
+
+            runAsync();
+        });
+    </script>
+    </div>
+</body>
+
+</html>
